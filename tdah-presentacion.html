@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TDAH — Presentación</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ── Variables ── */
+  :root {
+    --bg:        #0d0f0e;
+    --surface:   #141714;
+    --surface2:  #1c201c;
+    --lime:      #c8f135;
+    --lime-dim:  #a0c020;
+    --white:     #f0f2ec;
+    --muted:     #6b7368;
+    --accent2:   #3dff9a;
+    --danger:    #ff5252;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    --radius:    12px;
+    --trans:     0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--font-body);
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* ── Grain overlay ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.35;
+  }
+
+  /* ── Slides wrapper ── */
+  #deck {
+    position: fixed; inset: 0; z-index: 1;
+  }
+
+  /* ── Individual slide ── */
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    padding: 60px 80px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(18px);
+    transition: opacity var(--trans), transform var(--trans);
+  }
+  .slide.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+  }
+
+  /* ── Accent line (top-left corner decoration) ── */
+  .slide::before {
+    content: '';
+    position: absolute; top: 32px; left: 56px;
+    width: 40px; height: 3px;
+    background: var(--lime);
+    border-radius: 2px;
+    transition: width 0.4s ease 0.3s;
+  }
+  .slide.active::before { width: 80px; }
+
+  /* ── Typography ── */
+  .slide-tag {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--lime);
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-family: var(--font-head);
+    font-size: clamp(3rem, 7vw, 6.5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--white);
+  }
+  h1 span { color: var(--lime); }
+  h2 {
+    font-family: var(--font-head);
+    font-size: clamp(1.8rem, 4vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+    color: var(--white);
+  }
+  h2 span { color: var(--lime); }
+  p {
+    font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+    line-height: 1.75;
+    color: #b8bcb4;
+    max-width: 680px;
+  }
+  .big-stat {
+    font-family: var(--font-head);
+    font-size: clamp(4rem, 9vw, 8rem);
+    font-weight: 800;
+    color: var(--lime);
+    line-height: 1;
+  }
+  .big-stat + p { margin-top: 12px; }
+
+  /* ── Card grid ── */
+  .card-grid {
+    display: grid;
+    gap: 16px;
+    width: 100%;
+    max-width: 860px;
+  }
+  .card-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+  .card-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+  .card {
+    background: var(--surface2);
+    border: 1px solid #2a2e2a;
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::after {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--lime);
+  }
+  .card h3 {
+    font-family: var(--font-head);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--lime);
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+  .card p {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: #a0a89c;
+    max-width: none;
+  }
+
+  /* ── Tag chips ── */
+  .chip-list {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    max-width: 800px;
+    margin-top: 8px;
+  }
+  .chip {
+    background: var(--surface2);
+    border: 1px solid #2f332f;
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 0.85rem;
+    color: var(--white);
+  }
+  .chip.lime { background: var(--lime); color: #0d0f0e; font-weight: 600; border-color: var(--lime); }
+  .chip.green { border-color: var(--accent2); color: var(--accent2); }
+  .chip.red   { border-color: var(--danger);  color: var(--danger); }
+
+  /* ── Split layout ── */
+  .split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+    max-width: 900px;
+    width: 100%;
+  }
+
+  /* ── Slide 0: Título ── */
+  #slide-0 { text-align: center; align-items: center; }
+  #slide-0::before { display: none; }
+  .title-badge {
+    display: inline-block;
+    background: var(--lime);
+    color: #0d0f0e;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 999px;
+    margin-bottom: 28px;
+  }
+  .subtitle {
+    font-size: 1rem;
+    color: var(--muted);
+    margin-top: 16px;
+    letter-spacing: 0.04em;
+  }
+  .title-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid #1e221e;
+    pointer-events: none;
+  }
+
+  /* ── Ref list ── */
+  .ref-list { list-style: none; width: 100%; max-width: 760px; }
+  .ref-list li {
+    padding: 14px 0;
+    border-bottom: 1px solid #1e221e;
+    font-size: 0.9rem;
+    color: #9aa09a;
+    display: flex; gap: 14px; align-items: baseline;
+  }
+  .ref-list li span.num {
+    font-family: var(--font-head);
+    font-weight: 700;
+    color: var(--lime);
+    font-size: 0.8rem;
+    min-width: 22px;
+  }
+  .ref-list li a { color: var(--lime-dim); text-decoration: none; }
+  .ref-list li a:hover { color: var(--lime); text-decoration: underline; }
+
+  /* ── Video slide ── */
+  #slide-8 { padding: 40px 60px; }
+  .video-shell {
+    width: 100%; max-width: 820px;
+    aspect-ratio: 16/9;
+    background: #000;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #2a2e2a;
+    margin-top: 20px;
+  }
+  .video-shell iframe {
+    width: 100%; height: 100%;
+    border: none;
+  }
+
+  /* ── Navigation bar ── */
+  #nav {
+    position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+    z-index: 100;
+    display: flex; align-items: center; gap: 16px;
+    background: rgba(20,23,20,0.85);
+    backdrop-filter: blur(14px);
+    border: 1px solid #2a2e2a;
+    border-radius: 999px;
+    padding: 10px 20px;
+  }
+  #nav button {
+    background: none; border: none; cursor: pointer;
+    color: var(--muted);
+    font-size: 18px; line-height: 1;
+    padding: 4px 6px;
+    transition: color 0.2s;
+  }
+  #nav button:hover { color: var(--lime); }
+  #nav button:disabled { opacity: 0.2; cursor: default; }
+  #counter {
+    font-family: var(--font-head);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--muted);
+    min-width: 52px;
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+  #progress {
+    position: fixed; top: 0; left: 0; height: 2px;
+    background: var(--lime);
+    z-index: 200;
+    transition: width 0.4s ease;
+  }
+
+  /* ── Slide-number hint top-right ── */
+  #slide-label {
+    position: fixed; top: 28px; right: 40px;
+    z-index: 100;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* ── Keyboard hint ── */
+  #keyhint {
+    position: fixed; bottom: 82px; left: 50%; transform: translateX(-50%);
+    z-index: 100;
+    font-size: 0.7rem;
+    color: #3d4140;
+    letter-spacing: 0.1em;
+    pointer-events: none;
+    transition: opacity 0.5s;
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="slide-label">TDAH</div>
+<div id="keyhint">← → o ESPACIO para navegar</div>
+
+<!-- ═══════════════════════════════════════ SLIDES ═══════════════════════════════════════ -->
+<div id="deck">
+
+  <!-- 0 · Título -->
+  <div class="slide" id="slide-0">
+    <!-- decorative rings -->
+    <div class="title-ring" style="width:520px;height:520px;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+    <div class="title-ring" style="width:700px;height:700px;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.4"></div>
+    <div class="title-ring" style="width:900px;height:900px;top:50%;left:50%;transform:translate(-50%,-50%);opacity:0.15"></div>
+
+    <div class="title-badge">Presentación Educativa · Secundaria</div>
+    <h1>TDAH</h1>
+    <p class="subtitle">Trastorno por Déficit de Atención e Hiperactividad</p>
+    <p style="margin-top:32px; text-align:center; font-size:0.85rem; color:#3d4140; letter-spacing:0.06em;">
+      Características · Síntomas · Causas · Consecuencias
+    </p>
+  </div>
+
+  <!-- 1 · Introducción -->
+  <div class="slide" id="slide-1">
+    <div class="slide-tag">01 — Introducción</div>
+    <h2>¿Qué es el <span>TDAH</span>?</h2>
+    <p style="margin-bottom:20px;">
+      El <strong style="color:var(--white);">Trastorno por Déficit de Atención e Hiperactividad (TDAH)</strong> es un trastorno del neurodesarrollo que afecta tanto a niños como a adultos. Se caracteriza por niveles persistentes de inatención, hiperactividad e impulsividad que interfieren con el funcionamiento cotidiano y el desarrollo de la persona.
+    </p>
+    <p style="margin-bottom:28px;">
+      No es una cuestión de falta de voluntad ni de mala crianza: tiene bases neurobiológicas claras y es uno de los trastornos psiquiátricos más estudiados y diagnosticados a nivel mundial.
+    </p>
+    <div class="chip-list">
+      <span class="chip lime">Neurodesarrollo</span>
+      <span class="chip">Crónico</span>
+      <span class="chip">Alta prevalencia</span>
+      <span class="chip green">Tratable</span>
+    </div>
+  </div>
+
+  <!-- 2 · Características -->
+  <div class="slide" id="slide-2">
+    <div class="slide-tag">02 — Desarrollo</div>
+    <h2><span>Características</span> de la enfermedad</h2>
+    <div class="card-grid cols-3" style="margin-top:8px;">
+      <div class="card">
+        <h3>Inatención</h3>
+        <p>Dificultad para mantener el foco en una tarea, se distrae con facilidad y suele olvidar instrucciones o compromisos.</p>
+      </div>
+      <div class="card">
+        <h3>Hiperactividad</h3>
+        <p>Necesidad constante de movimiento, incapacidad para permanecer quieto en situaciones que lo requieren.</p>
+      </div>
+      <div class="card">
+        <h3>Impulsividad</h3>
+        <p>Actúa antes de pensar, interrumpe conversaciones y toma decisiones precipitadas sin evaluar consecuencias.</p>
+      </div>
+    </div>
+    <p style="margin-top:22px; font-size:0.85rem; color:var(--muted);">
+      * El TDAH puede presentarse con predominio de uno de los tres rasgos o de forma combinada.
+    </p>
+  </div>
+
+  <!-- 3 · Síntomas -->
+  <div class="slide" id="slide-3">
+    <div class="slide-tag">03 — Desarrollo</div>
+    <h2><span>Síntomas</span> frecuentes</h2>
+    <div class="split">
+      <div>
+        <p style="color:var(--lime); font-size:0.8rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:14px;">En niños y adolescentes</p>
+        <div class="chip-list" style="flex-direction:column; gap:8px;">
+          <span class="chip">Pérdida de objetos con frecuencia</span>
+          <span class="chip">Dificultad para organizarse</span>
+          <span class="chip">No termina las tareas escolares</span>
+          <span class="chip">Habla en exceso o interrumpe</span>
+          <span class="chip">Dificultad para esperar su turno</span>
+        </div>
+      </div>
+      <div>
+        <p style="color:var(--lime); font-size:0.8rem; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:14px;">En adultos</p>
+        <div class="chip-list" style="flex-direction:column; gap:8px;">
+          <span class="chip">Problemas de gestión del tiempo</span>
+          <span class="chip">Dificultad para priorizar tareas</span>
+          <span class="chip">Baja tolerancia a la frustración</span>
+          <span class="chip">Cambios de humor frecuentes</span>
+          <span class="chip">Descuido en responsabilidades</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 · Causas -->
+  <div class="slide" id="slide-4">
+    <div class="slide-tag">04 — Desarrollo</div>
+    <h2><span>Causas</span> del TDAH</h2>
+    <div class="card-grid cols-2" style="max-width:820px;">
+      <div class="card">
+        <h3>Factores genéticos</h3>
+        <p>El TDAH tiene una heredabilidad de alrededor del 76 %. Si un progenitor lo tiene, la probabilidad de que un hijo lo desarrolle es significativamente mayor.</p>
+      </div>
+      <div class="card">
+        <h3>Factores neurobiológicos</h3>
+        <p>Alteraciones en los circuitos dopaminérgicos y noradrenérgicos del cerebro, especialmente en áreas como la corteza prefrontal y los ganglios basales.</p>
+      </div>
+      <div class="card">
+        <h3>Factores ambientales</h3>
+        <p>Exposición prenatal al tabaco, alcohol o toxinas; parto prematuro y bajo peso al nacer son factores de riesgo documentados.</p>
+      </div>
+      <div class="card">
+        <h3>Factores perinatales</h3>
+        <p>Traumatismos craneoencefálicos en la infancia o infecciones que afecten el sistema nervioso central pueden contribuir a su aparición.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 · Consecuencias -->
+  <div class="slide" id="slide-5">
+    <div class="slide-tag">05 — Desarrollo</div>
+    <h2><span>Consecuencias</span> sin tratamiento</h2>
+    <div class="card-grid cols-3" style="margin-top:8px;">
+      <div class="card">
+        <h3>Rendimiento escolar</h3>
+        <p>Bajo desempeño académico, repetición de grado y mayor riesgo de abandono escolar temprano.</p>
+      </div>
+      <div class="card">
+        <h3>Relaciones sociales</h3>
+        <p>Dificultades para mantener amistades, conflictos frecuentes y sensación de incomprensión por parte del entorno.</p>
+      </div>
+      <div class="card">
+        <h3>Autoestima</h3>
+        <p>Vivencias repetidas de fracaso generan baja autoestima, ansiedad y, en algunos casos, depresión.</p>
+      </div>
+      <div class="card">
+        <h3>Ámbito laboral</h3>
+        <p>En adultos: mayor rotación laboral, dificultad para mantener empleo estable y conflictos con superiores.</p>
+      </div>
+      <div class="card">
+        <h3>Conductas de riesgo</h3>
+        <p>Mayor predisposición a conductas impulsivas, accidentes de tráfico y consumo de sustancias.</p>
+      </div>
+      <div class="card">
+        <h3>Con tratamiento</h3>
+        <p style="color:var(--accent2);">La intervención temprana —psicológica, educativa y/o farmacológica— reduce notablemente todas estas consecuencias.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 · Bibliografía -->
+  <div class="slide" id="slide-6">
+    <div class="slide-tag">06 — Bibliografía</div>
+    <h2>Libros de <span>referencia</span></h2>
+    <ul class="ref-list">
+      <li>
+        <span class="num">01</span>
+        <span>Ramos-Quiroga, J. A., Bosch, R. &amp; Casas, M. — <em>Comprender el TDAH en adultos.</em> Ed. Amat.</span>
+      </li>
+      <li>
+        <span class="num">02</span>
+        <span>Orjales Villar, I. — <em>Déficit de Atención con Hiperactividad: Manual para padres y educadores.</em> Ed. CEPE.</span>
+      </li>
+      <li>
+        <span class="num">03</span>
+        <span>Ordóñez, M. J. &amp; Álvarez-Higuera, R. — <em>No Estáis Solos: TDAH en niños.</em> Ed. Libros Cúpula, 2011.</span>
+      </li>
+      <li>
+        <span class="num">04</span>
+        <span>Miranda, A., Roselló, B. &amp; Soriano, M. — <em>Estudiantes con deficiencias atencionales.</em> Ed. Promolibro.</span>
+      </li>
+      <li>
+        <span class="num">05</span>
+        <span>Barkley, R. A. — <em>Taking Charge of ADHD.</em> The Guilford Press, 3.ª ed.</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- 7 · Fuentes web / Autores -->
+  <div class="slide" id="slide-7">
+    <div class="slide-tag">07 — Fuentes web</div>
+    <h2>Sitios de <span>consulta</span></h2>
+    <ul class="ref-list">
+      <li>
+        <span class="num">Web</span>
+        <span>Fundación CADAH — Centro de Ayuda al Déficit de Atención e Hiperactividad.
+          <br><a href="https://www.fundacioncadah.org" target="_blank">www.fundacioncadah.org</a></span>
+      </li>
+      <li>
+        <span class="num">Web</span>
+        <span>Fundación Adana — Trastornos del Neurodesarrollo.
+          <br><a href="https://fundacionadana.org" target="_blank">fundacionadana.org</a></span>
+      </li>
+      <li>
+        <span class="num">Web</span>
+        <span>Red TDAH — Plataforma de divulgación científica sobre TDAH.
+          <br><a href="https://www.redtdah.org" target="_blank">www.redtdah.org</a></span>
+      </li>
+      <li>
+        <span class="num">Web</span>
+        <span>Personas con TDAH — Fundación Progreso.
+          <br><a href="https://www.personascontdah.org" target="_blank">www.personascontdah.org</a></span>
+      </li>
+      <li>
+        <span class="num">Web</span>
+        <span>CHADD — Children and Adults with ADHD (fuente internacional de referencia).
+          <br><a href="https://chadd.org" target="_blank">chadd.org</a></span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- 8 · Anexo + Video -->
+  <div class="slide" id="slide-8">
+    <div class="slide-tag">08 — Anexo</div>
+    <h2>Video <span>introductorio</span></h2>
+    <p>Russell Barkley, uno de los principales investigadores mundiales sobre el TDAH, explica en este fragmento la naturaleza del trastorno y su impacto en el desarrollo.</p>
+    <div class="video-shell">
+      <iframe
+        src="https://www.youtube.com/embed/izZaxNaRxVA?start=199&rel=0&modestbranding=1"
+        title="TDAH – Russell Barkley"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<!-- ── Navigation ── -->
+<div id="nav">
+  <button id="btn-prev" title="Anterior (←)">&#8592;</button>
+  <span id="counter">1 / 9</span>
+  <button id="btn-next" title="Siguiente (→ o Espacio)">&#8594;</button>
+</div>
+
+<!-- ═══════════════════════════════════════ JS ═══════════════════════════════════════ -->
+<script>
+(function () {
+  const slides  = document.querySelectorAll('.slide');
+  const total   = slides.length;
+  const counter = document.getElementById('counter');
+  const btnPrev = document.getElementById('btn-prev');
+  const btnNext = document.getElementById('btn-next');
+  const progress= document.getElementById('progress');
+  const keyhint = document.getElementById('keyhint');
+  let current   = 0;
+  let hintTimer;
+
+  /* ── Show slide ── */
+  function goTo(index) {
+    if (index < 0 || index >= total) return;
+
+    slides[current].classList.remove('active');
+    current = index;
+    slides[current].classList.add('active');
+
+    /* Update UI */
+    counter.textContent  = (current + 1) + ' / ' + total;
+    btnPrev.disabled     = current === 0;
+    btnNext.disabled     = current === total - 1;
+    progress.style.width = ((current / (total - 1)) * 100) + '%';
+  }
+
+  /* ── Keyboard ── */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === ' ') {
+      e.preventDefault();
+      goTo(current + 1);
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      goTo(current - 1);
+    }
+  });
+
+  /* ── Buttons ── */
+  btnPrev.addEventListener('click', function () { goTo(current - 1); });
+  btnNext.addEventListener('click', function () { goTo(current + 1); });
+
+  /* ── Touch / swipe ── */
+  let touchStartX = 0;
+  document.addEventListener('touchstart', function (e) { touchStartX = e.changedTouches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) dx < 0 ? goTo(current + 1) : goTo(current - 1);
+  });
+
+  /* ── Hide key hint after 5s ── */
+  hintTimer = setTimeout(function () {
+    keyhint.style.opacity = '0';
+  }, 5000);
+
+  /* ── Init ── */
+  goTo(0);
+})();
+</script>
+
+</body>
+</html>
